@@ -10,12 +10,12 @@ public class InvoiceGenerator {
         //calculation of total fare
         Total_Fare = distance * RS_PER_KILOMETER + time * RS_PER_MINUTE;
         return Math.max(Total_Fare, MIN_FARE);
-
     }
-
-    public static void main(String[] args) {
-        InvoiceGenerator ii = new InvoiceGenerator();
-        ii.calculateFare(5,10);
-        System.out.println(Total_Fare);
+    public double calculateFare(Ride[] rides) {
+        double totalFare = 0;
+        for (Ride ride : rides) {
+            totalFare += this.calculateFare(ride.distance, ride.time);
+        }
+        return totalFare;
     }
 }
