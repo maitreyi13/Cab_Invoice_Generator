@@ -29,4 +29,14 @@ public class InvoiceGeneratorTest {
         InvoiceSummary ExpectedInvoiceSummary = new InvoiceSummary(2, 30.0);
         Assertions.assertEquals(ExpectedInvoiceSummary , summary);
     }
+
+    @Test
+    void  givenUserId_ShouldReturnInvoiceSummary() {
+        String userId = "neha@13";
+        Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) };
+        invoiceGenerator.addRides(userId, rides);
+        InvoiceSummary summary = invoiceGenerator.getInvoiceSummary(userId);
+        InvoiceSummary checkSummary = new InvoiceSummary(2, 30.0);
+        Assertions.assertEquals(summary, checkSummary);
+    }
 }
