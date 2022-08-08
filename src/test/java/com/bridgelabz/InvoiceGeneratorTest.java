@@ -7,36 +7,44 @@ public class InvoiceGeneratorTest {
     InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
     @Test
     void given_DistanceAndTime_ShouldReturn_TotalFare() {
-        double distance = 5.0; //distance in kilometers
-        int time = 10; //time in minutes
-        double fare = invoiceGenerator.calculateFare(distance, time); //Total fare calculations
-        Assertions.assertEquals(60 , fare);           //5*10 + 1*10
+        Ride ride = new Ride(RideTypes.NORMAL_RIDE, 5, 1);
+        double fare = invoiceGenerator.calculateFare(ride);
+        Assertions.assertEquals(51 , fare);           //5*10 + 1*1
     }
 
     @Test
     void givenLessDistanceOrTime_ShouldReturnMinFare() {
-        double distance = 0.1; //distance in kilometers
-        int time = 1; //time in minutes
-        double fare = invoiceGenerator.calculateFare(distance, time); //Total fare calculations
+        Ride ride = new Ride(RideTypes.NORMAL_RIDE, 0.1, 1);
+        double fare = invoiceGenerator.calculateFare(ride); //Total fare calculations
         Assertions.assertEquals(5 , fare);         //0.1*10 + 1*1
     }
 
     @Test
     void givenMultipleRides_shouldReturnInvoiceSummary() {
-        Ride[] rides = {new Ride(2.0 , 5),
-                new Ride(0.1 , 1)};
+        Ride[] rides = {new Ride(RideTypes.NORMAL_RIDE, 2.0, 5), new Ride(RideTypes.NORMAL_RIDE, 0.1, 1)};
         InvoiceSummary summary = invoiceGenerator.calculateFare(rides);
-        InvoiceSummary ExpectedInvoiceSummary = new InvoiceSummary(2, 30.0);
-        Assertions.assertEquals(ExpectedInvoiceSummary , summary);
+        InvoiceSummary expectedSummary = new InvoiceSummary(2, 30.0);
+        Assertions.assertEquals(expectedSummary, summary);
     }
 
+        @Test
+        public void givenUserId_ShouldReturnInvoiceSummary () {
+            String userId = "neha@13";
+            Ride[] ride1 = {new Ride(RideTypes.NORMAL_RIDE, 2.0, 5), new Ride(RideTypes.NORMAL_RIDE, 0.1, 1)};
+            invoiceGenerator.addRides(userId, ride1);
+            InvoiceSummary summary1 = invoiceGenerator.getInvoiceSummary(userId);
+            InvoiceSummary checkSummary = new InvoiceSummary(2, 30.0);
+            Assertions.assertEquals(summary1, checkSummary);
+        }
+
     @Test
-    void  givenUserId_ShouldReturnInvoiceSummary() {
-        String userId = "neha@13";
-        Ride[] rides = { new Ride(2.0, 5), new Ride(0.1, 1) };
+    void givenUserIdWithRideType_ShouldReturnTheInvoice() {
+        String userId = "addy@123";
+        Ride[] rides = { new Ride(RideTypes.NORMAL_RIDE, 2.0, 5), new Ride(RideTypes.NORMAL_RIDE, 0.1, 1),
+                new Ride(RideTypes.PREMIUM_RIDE, 0.1, 1) };
         invoiceGenerator.addRides(userId, rides);
         InvoiceSummary summary = invoiceGenerator.getInvoiceSummary(userId);
-        InvoiceSummary checkSummary = new InvoiceSummary(2, 30.0);
+        InvoiceSummary checkSummary = new InvoiceSummary(3, 50.0);
         Assertions.assertEquals(summary, checkSummary);
     }
 }
